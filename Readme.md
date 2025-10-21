@@ -1,69 +1,101 @@
-# Motion Detection System
+# Pneumonia Detection (Flask + TensorFlow/Keras)
 
-This project implements a real-time motion detection system using Python and OpenCV. It can detect and analyze motion in video streams, making it suitable for security monitoring and surveillance applications.
+Small Flask application that classifies chest X-ray images as NORMAL or PNEUMONIA using a pre-trained Keras model.
+
+## Quick overview
+
+- Web UI served from `templates/index.html`.
+- Static assets (CSS and uploaded images) live in `static/`.
+- Main app entry: `app.py` — handles file upload, preprocessing (resizes to 150×150), and prediction.
+- Expected model file: `model.h5` (place in project root next to `app.py`).
 
 ## Features
 
-- Real-time motion detection
-- Video frame processing and analysis
-- Visual feedback with bounding boxes around detected motion
-- Support for both webcam and video file input
-
-## Installation
-
-1. Clone this repository
-2. Install required dependencies:
-
-```bash
-pip install -r requirements.txt
-```
-
-## Usage
-
-Run the main detection script:
-
-```bash
-python detection.py
-```
-
-Use different modes:
-
-- Press 'q' to quit
-- Press 'c' to clear the detection history
-- Press 's' to save the current frame
-
-## Project Structure
-
-```
-Detection/
-├── detection.py     # Main motion detection implementation
-├── utils/
-│   └── draw.py     # Drawing utilities for visualization
-├── config/
-│   └── settings.py # Configuration settings
-├── tests/          # Test files
-└── requirements.txt
-```
-
-## Configuration
-
-Modify `config/settings.py` to adjust detection sensitivity and other parameters.
-
-## Result:-
-
-<img width="100%" src="https://github.com/aryanedusomaiya/Pneumonia-Detection-using-CNN/blob/main/image%20(1).png" alt="header-img" />
-<img width="100%" src="https://github.com/aryanedusomaiya/Pneumonia-Detection-using-CNN/blob/main/image%20(2).png" alt="header-img" />
+- Browser upload form for a single image.
+- Saves uploaded images to `static/uploads/`.
+- Uses a binary classifier (sigmoid) — score > 0.5 → PNEUMONIA, else NORMAL.
+- Basic error handling when model or upload is missing.
 
 ## Requirements
 
 - Python 3.7+
-- OpenCV
-- NumPy
+- Recommended packages:
+  - Flask
+  - tensorflow (or tensorflow-cpu)
+  - numpy
+  - Pillow
+- Create a `requirements.txt` with pinned versions for reproducibility:
 
-## License
+```bash
+pip freeze > requirements.txt
+```
 
-MIT License
+## Install & run (local)
 
-## Contributing
+1. Create and activate a virtual environment:
 
-Contributions are welcome! Please feel free to submit a Pull Request.
+```bash
+python -m venv .venv
+# Windows
+.venv\Scripts\activate
+# macOS / Linux
+source .venv/bin/activate
+```
+
+2. Install dependencies:
+
+```bash
+pip install flask tensorflow numpy pillow
+```
+
+(or `pip install -r requirements.txt` if provided)
+
+3. Ensure `model.h5` is in the project root (same folder as `app.py`).
+
+4. Start the app:
+
+```bash
+python app.py
+```
+
+Open http://127.0.0.1:5000/ in your browser.
+
+## Endpoints
+
+- GET / — main upload page
+- POST /predict — accepts multipart form field `file`; saves image to `static/uploads/` and returns prediction
+
+## How prediction works (from app.py)
+
+- Uploaded image is resized to 150×150 and normalized (pixel values scaled to [0,1]).
+- Model output is a single sigmoid score:
+  - score > 0.5 → `PNEUMONIA`
+  - score ≤ 0.5 → `NORMAL`
+- Class names used in app: `['NORMAL', 'PNEUMONIA']`
+
+## Project structure
+
+```
+Detection/
+├─ app.py
+├─ model.h5             # (required) trained Keras model
+├─ README.md
+├─ templates/
+│  └─ index.html
+├─ static/
+│  ├─ style.css
+│  └─ uploads/          # (created at runtime)
+```
+
+## Troubleshooting
+
+- "Model is not loaded" printed in browser: check `model.h5` exists and is compatible with your installed TensorFlow version; check console logs for the loading error.
+- Permission errors saving uploads: ensure `static/uploads/` exists and is writable (app will attempt to create it).
+- If TensorFlow import errors occur on low-resource machines, try `tensorflow-cpu` or use a smaller environment.
+
+## Notes for production
+
+- Do not run Flask's debug server in production. Deploy with a WSGI server (gunicorn, uWSGI) and put model loading behind application startup.
+- Consider validating file type, resizing on upload, and limiting upload size.
+
+Contributions and improvements welcome — add tests, model versioning, and CI as needed.

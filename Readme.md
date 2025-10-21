@@ -87,6 +87,11 @@ Detection/
 │  └─ uploads/          # (created at runtime)
 ```
 
+## Result:-
+
+<img width="100%" src="https://github.com/aryanedusomaiya/Pneumonia-Detection-using-CNN/blob/main/image%20(1).png" alt="header-img" />
+<img width="100%" src="https://github.com/aryanedusomaiya/Pneumonia-Detection-using-CNN/blob/main/image%20(2).png" alt="header-img" />
+
 ## Troubleshooting
 
 - "Model is not loaded" printed in browser: check `model.h5` exists and is compatible with your installed TensorFlow version; check console logs for the loading error.

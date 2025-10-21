@@ -49,6 +49,11 @@ Detection/
 
 Modify `config/settings.py` to adjust detection sensitivity and other parameters.
 
+## Result:-
+
+<img width="100%" src="https://github.com/aryanedusomaiya/Pneumonia-Detection-using-CNN/blob/main/image%20(1).png" alt="header-img" />
+<img width="100%" src="https://github.com/aryanedusomaiya/Pneumonia-Detection-using-CNN/blob/main/image%20(2).png" alt="header-img" />
+
 ## Requirements
 
 - Python 3.7+
